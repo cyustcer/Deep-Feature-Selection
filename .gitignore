@@ -7,6 +7,11 @@
 
 # Except folders
 !data/
+!data/linear/
+!data/linear/p_1000_N_500_s_100/
+!data/nonlinear/
+!data/nonlinear/
+!data/nonlinear/p_500_N_500_s_4
 !src/
 !docs/
 
