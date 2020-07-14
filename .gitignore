@@ -1,0 +1,16 @@
+# Ignore everyting
+*
+
+# Except system files
+!.gitignore
+!*.md
+
+# Except folders
+!data/
+!src/
+!docs/
+
+# Except files
+!*.py
+!*.ipynb
+!*.sh
