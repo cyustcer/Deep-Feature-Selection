@@ -14,6 +14,8 @@
 !data/nonlinear/p_500_N_500_s_4
 !src/
 !docs/
+!docs/markdowns/
+!docs/notebooks/
 !scripts/
 
 # Except files
@@ -22,3 +24,6 @@
 !*.sh
 !*.txt
 !*.yml
+!*.pdf
+!*.Rmd
+!*.html
