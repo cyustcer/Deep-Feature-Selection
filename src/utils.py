@@ -128,8 +128,8 @@ def data_load_l(k, normalization=True, directory = './data/linear/p_1000_N_1000_
     x_test = x[int(n/2):]
     y_test = y[int(n/2):]
     # Take first 500 samples as training set
-    x = x[:int(n)/2]
-    y = y[:int(n)/2]
+    x = x[:int(n/2)]
+    y = y[:int(n/2)]
     N, p = x.shape
     # normalize if needed
     if normalization:
