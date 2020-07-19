@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.nn import Parameter
+from torch.autograd import Variable
 
 ###############################################
 ### Generate 10 datasets for linear example ###
@@ -88,12 +89,14 @@ def data_load_n(k, normalization=False, directory="./data/nonlinear/p_500_N_600_
     x = np.loadtxt(directory+'X_'+str(k)+'.txt')
     y = np.loadtxt(directory+'y_'+str(k)+'.txt')
     n = x.shape[0]
+    n_pos = len(np.where(y == 1)[0])
+    n_neg = len(np.where(y == 0)[0])
     # Take first 300 samples as training set
-    train_pos_idx = np.where(y == 1)[0][:int(n)/2]
-    train_neg_idx = np.where(y == 0)[0][:int(n)/2]
+    train_pos_idx = np.where(y == 1)[0][:int(n_pos/2)]
+    train_neg_idx = np.where(y == 0)[0][:int(n_neg/2)]
     # Take last 300 samples as testing set
-    test_pos_idx = np.where(y == 1)[0][int(n)/2:]
-    test_neg_idx = np.where(y == 0)[0][int(n)/2:]
+    test_pos_idx = np.where(y == 1)[0][int(n_pos/2):]
+    test_neg_idx = np.where(y == 0)[0][int(n_neg/2):]
     train_idx = np.sort(np.append(train_pos_idx, train_neg_idx))
     test_idx = np.sort(np.append(test_pos_idx, test_neg_idx))
     x_test = x[test_idx]
@@ -122,8 +125,8 @@ def data_load_l(k, normalization=True, directory = './data/linear/p_1000_N_1000_
     n = x.shape[0]
     # Take last 500 samples as testing set
     supp = np.where(beta != 0)[0]
-    x_test = x[int(n)/2:]
-    y_test = y[int(n)/2:]
+    x_test = x[int(n/2):]
+    y_test = y[int(n/2):]
     # Take first 500 samples as training set
     x = x[:int(n)/2]
     y = y[:int(n)/2]

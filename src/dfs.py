@@ -12,11 +12,8 @@ def DFS_epoch(model, s, supp_x, data, label, loss_func, optimizer0, optimizer, T
     z = model.hidden0.weight.grad.data
     z_sort, z_indices = torch.sort(-torch.abs(z))
     Z = z_indices[:2*s].numpy()
-    #print(Z)
     T = set(Z)
     T = set(T).union(supp_x) # merge with previous support
-    #print("T:")
-    #print(T)
     Tc = np.setdiff1d(np.arange(p), list(T)) # indices for not updating variables
     ### Training over candidate support
     for j in range(Ts):
@@ -25,9 +22,8 @@ def DFS_epoch(model, s, supp_x, data, label, loss_func, optimizer0, optimizer, T
         for _ in range(step):
             out = model(data)
             loss = loss_func(out, label)
-            LOSS.append(loss.data.numpy().tolist())
-            #print(j)
             #print(loss)
+            LOSS.append(loss.data.numpy().tolist())
             optimizer.zero_grad()
             loss.backward(retain_graph=True)
             optimizer.step()
@@ -38,9 +34,8 @@ def DFS_epoch(model, s, supp_x, data, label, loss_func, optimizer0, optimizer, T
         for _ in range(step):
             out = model(data)
             loss = loss_func(out, label)
-            LOSS.append(loss.data.numpy().tolist())
-            #print(j)
             #print(loss)
+            LOSS.append(loss.data.numpy().tolist())
             optimizer0.zero_grad()
             loss.backward(retain_graph=True)
             optimizer0.step()
@@ -54,8 +49,7 @@ def DFS_epoch(model, s, supp_x, data, label, loss_func, optimizer0, optimizer, T
     w = model.hidden0.weight.data
     w_sort, w_indices = torch.sort(-torch.abs(w))
     supp_x = w_indices[:s].numpy()
-    print("Final support:")
-    print(supp_x)
+    print("Final Support: ", supp_x)
     supp_x_c = np.setdiff1d(range(p), list(supp_x)) # un-selected variables
     model.hidden0.weight.data.numpy()[supp_x_c] = 0 # pruning
     return model, supp_x, LOSS

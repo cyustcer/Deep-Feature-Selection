@@ -5,6 +5,8 @@ output: html_document
 
 ## SCAD penalty
 
+In this section, we show how we did linear example analysis using SCAD penalty using `ncvreg` packages.
+
 ```{r pre-request, warning=FALSE}
 library(ncvreg)
 source("../../src/utils.R")
@@ -22,6 +24,8 @@ SUPP = list()
 S = c()
 ```
 
+In function `ncvreg`, we specify a single value of $\lambda$ to keep track of the BIC and number of variable $s$ for each individual $\lambda$.
+
 ```{r, warning=FALSE}
 idx = 1
 C = 1
@@ -37,4 +41,14 @@ for (lambda in LAMBDAs) {
     idx = idx + 1
 }
 plot(S, BIC)
+```
+
+In the following chunk, we provide the metric for the result
+
+```{r}
+best_lambda = LAMBDAs[which.min(BIC)]
+best_supp = SUPP[[which.min(BIC)]]
+best_scad = ncvreg(data$x, data$y, penalty='SCAD', lambda=best_lambda)
+mse_train = mean((predict(best_scad, as.matrix(data$x)) - data$y)^2)
+mse_test = mean((predict(best_scad, as.matrix(data$x_test)) - data$y_test)^2)
 ```

@@ -1,7 +1,7 @@
 import torch
 import torch.nn.functional as F
 
-from tools import WeightNorm, DotProduct
+from utils import WeightNorm, DotProduct
 
 ### Linear regression model
 class Net_linear(torch.nn.Module):
