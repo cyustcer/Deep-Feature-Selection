@@ -8,10 +8,10 @@
 # Except folders
 !data/
 !data/linear/
-!data/linear/p_1000_N_500_s_100/
+!data/linear/p_1000_N_1000_s_100/
 !data/nonlinear/
 !data/nonlinear/
-!data/nonlinear/p_500_N_500_s_4
+!data/nonlinear/p_500_N_600_s_4
 !src/
 !docs/
 !docs/markdowns/
