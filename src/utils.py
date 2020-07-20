@@ -138,9 +138,11 @@ def data_load_l(k, normalization=True, directory = './data/linear/p_1000_N_1000_
             x[:, j] = x[:, j]/np.sqrt(np.sum(x[:, j]**2)/float(N))
     X, Y = torch.Tensor(x), torch.Tensor(y)
     X, Y = X.type(torch.FloatTensor), Y.type(torch.FloatTensor)
+    Y = Y.view(-1, 1)
     X, Y = Variable(X), Variable(Y)
     X_test, Y_test = torch.Tensor(x_test), torch.Tensor(y_test)
     X_test, Y_test = X_test.type(torch.FloatTensor), Y_test.type(torch.FloatTensor)
+    Y_test = Y_test.view(-1, 1)
     X_test, Y_test = Variable(X_test), Variable(Y_test)
     return X, Y, X_test, Y_test, supp
 
@@ -177,7 +179,7 @@ def mse(model, x, y):
     lf = torch.nn.MSELoss()
     out = model(x)
     loss = lf(out, y)
-    return loss.data.numpy()[0]
+    return loss.data.numpy().tolist()
 
 
 ############################

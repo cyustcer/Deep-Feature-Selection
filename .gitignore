@@ -25,5 +25,4 @@
 !*.txt
 !*.yml
 !*.pdf
-!*.Rmd
 !*.html
