@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from models import Net_nonlinear
+from models import Net_nonlinear, Net_linear
 from utils import accuracy, mse
 
 ### Function for one DFS iteration
@@ -111,7 +111,7 @@ def training_n(X, Y, X_test, Y_test, c, s,
     return best_model, best_supp, bic, [_err_train, _err_test], LOSSES
 
 
-def training_l(X, Y, X_test, Y_test, c, s,
+def training_l(X, Y, X_test, Y_test, supp, c, s,
                epochs=10, n_hidden1=1, learning_rate=0.01, Ts=1000, step=1):
     N, p = X.shape
     torch.manual_seed(1) # set seed 
@@ -150,7 +150,7 @@ def training_l(X, Y, X_test, Y_test, c, s,
     ns = set(supp).difference(best_supp) # negative selection number
     _err_train = mse(best_model, X, Y) # training error
     _err_test = mse(best_model, X_test, Y_test) # testing error
-    _bic = N*np.log(_err_train) + C*s*np.log(N) # bic
+    _bic = N*np.log(_err_train) + 3.*s*np.log(N) # bic
     
     ### Second step training (for two-step procedure)
     _optimizer = torch.optim.Adam(list(best_model.parameters())[1:], lr=0.5)
@@ -162,5 +162,5 @@ def training_l(X, Y, X_test, Y_test, c, s,
         _optimizer.step()
         hist.append(loss.data.numpy().tolist())
     
-    bic = N*np.log(loss.data.numpy().tolist()) + C*s*np.log(N) # bic based on final model
+    bic = N*np.log(loss.data.numpy().tolist()) + 3.*s*np.log(N) # bic based on final model
     return best_model, best_supp, [_bic, bic], [_err_train, _err_test], len(fs), len(ns), hist
