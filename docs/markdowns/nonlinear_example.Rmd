@@ -15,25 +15,17 @@ In this example, ...
 
 The following methods will be implemented:
 
-* GAM (Generalized Additive Model)
-* RF (Random Forest)
-* BART (Bayesian Additive Regression Trees)
+* Generalized Additive Model(GAM)
+* Random Forest(RF)
+* Bayesian Additive Regression Trees(BART)
 * SCAD
-* BNN (Bayesian Neural Networks)
+* Bayesian Neural Networks(BNN)
 
 ### Data Preparation
 In this section, we will read in the data that is generated using `nonlinear_generator` from `./src/utils.py`
 
 ```{r}
-cross_entropy <- function(y_pred, y_true) {
-  loss = -mean((y_true*log(y_pred))+(1-y_true)*log(1-y_pred))
-  return(loss)
-}
-
-BIC <- function(loss, s, n) {
-  bic = 2*n*loss + s*log(n)
-  return(bic)
-}
+source("../../src/utils.R")
 ```
 
 
@@ -66,29 +58,73 @@ The dimension of test set: (`r dim(X_test)`)
 * The number of positive samples: `r length(y_test==1)`
 * The number of negative samples: `r length(y_test==0)`
 
-### GAM
+### Generalized Additive Model (GAM)
 
-In this section, we will implement Generalized Additve Model(GAM) for variable selections and predictive preformance. We will use R package `gamsel`. We first use function `cv.gamsel` to select proper $\lambda$ and fit with `gamsel` use selected $\lambda$, and finally get support use `getActive`.
+In this section, we will implement Generalized Additiveve Model(GAM) for variable selections and predictive preformance. We will use R package `gamsel`. We first use function `gamsel` fit regularization path. We then calculate BICs with respect to the regaluraization path and select the best $\lambda$, and adopt the corresponding fitted model. `getActive` will help get the estimated support.
 
 ```{r, message=FALSE}
 library(gamsel)
 gam = gamsel(X_train, y_train, family="binomial")
 SUPPs = getActive(gam, c(1:50))
 Ss = as.numeric(lapply(SUPPs, length))
-Y_Preds = predict(gam, X_train, type="response")
-LOSSes = apply(Y_Preds, 2, cross_entropy, y_true=y_train)
+Y_Fits = predict(gam, X_train, type="response")
+LOSSes = apply(Y_Fits, 2, cross_entropy, y_true=y_train)
 BICs = BIC(LOSSes, Ss, N)
 best_idx = which.min(BICs)
-supp_x = getActive(gam, index=c(best_idx), type="nonlinear")[[1]]
-train_err = 1 - (sum((Y_Preds[, best_idx]>=0.5)*1==y_train)/300.)
-test_err = 1 - (sum((Y_Preds[, best_idx]>=0.5)*1==y_test)/300.)
-(supp_x)
-(train_err)
-(test_err)
+supp_gam = getActive(gam, index=c(best_idx), type="nonlinear")[[1]]
+train_err_gam = 1 - (sum((Y_Fits[, best_idx]>=0.5)*1==y_train)/300.)
+Y_Preds = predict(gam, X_test, type="response")
+test_err_gam = 1 - (sum((Y_Preds[, best_idx]>=0.5)*1==y_test)/300.)
 ```
 
 
-The selected support is `r supp_x`
+The selected support is `r supp_gam`, the training error is `r train_err_gam`, the test error is `r test_err_gam`.
+
+### Random Forest
+
+In this section, we will implement Random Forest(RF) for predictive performance and variable importance. We will use R package `h2o`. For the installation, please see [_h2o_](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/downloading.html)
+
+```{r, include=FALSE}
+library(h2o)
+h2o.init() # start a h2o session
+# Transfer data to h2o objects
+data_train = as.h2o(cbind(X_train, y_train))
+data_train["y_train"] = as.factor(data_train["y_train"])
+data_test = as.h2o(cbind(X_test, y_test))
+data_test["y_test"] = as.factor(data_test["y_test"])
+
+rf = h2o.randomForest(y="y_train", training_frame=data_train)
+supp_rf = c(1:500)[h2o.varimp(rf)$percentage>0.0125]
+fit_rf = predict(rf, as.h2o(X_train))$predict
+pred_rf = predict(rf, as.h2o(X_test))$predict
+train_err_rf = 1 - sum(fit_rf==as.h2o(y_train))/300.
+test_err_rf = 1 - sum(pred_rf==as.h2o(y_test))/300.
+```
+
+The selected support is `r supp_rf`, the training error is `r train_err_gam`, the test error is `r test_err_gam`.
+
+
+### Bayesian Additive Regression Trees(BART)
+
+
+```{r, include=FALSE}
+options(java.parameters = "-Xmx5g") # reserve 5G memory
+library(bartMachine)
+set_bart_machine_num_cores(4)
+bart_vs = bartMachine(X=X_train, y=(y_train), num_trees=75)
+var_sel = var_selection_by_permute_cv(bart_vs)
+bart = bartMachine(X=X_train, y=factor(y_train), num_trees=75)
+supp_bart = var_sel$important_vars_cv
+fit_bart = predict(bart, X_train, type="class")
+pred_bart = predict(bart, X_test, type="class")
+train_err_rf = 1 - sum(fit_bart==y_train)/300.
+test_err_rf = 1 - sum(pred_bart==y_test)/300.
+```
+
+
+
+
+
 
 
 

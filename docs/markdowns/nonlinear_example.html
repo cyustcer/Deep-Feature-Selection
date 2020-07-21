@@ -377,17 +377,16 @@ summary {
 <p>In this example, …</p>
 <p>The following methods will be implemented:</p>
 <ul>
-<li>GAM (Generalized Additive Model)</li>
-<li>RF (Random Forest)</li>
-<li>BART (Bayesian Additive Regression Trees)</li>
+<li>Generalized Additive Model(GAM)</li>
+<li>Random Forest(RF)</li>
+<li>Bayesian Additive Regression Trees(BART)</li>
 <li>SCAD</li>
-<li>BNN (Bayesian Neural Networks)</li>
+<li>Bayesian Neural Networks(BNN)</li>
 </ul>
 <div id="data-preparation" class="section level3">
 <h3>Data Preparation</h3>
 <p>In this section, we will read in the data that is generated using <code>nonlinear_generator</code> from <code>./src/utils.py</code></p>
-<pre class="r"><code>getwd()</code></pre>
-<pre><code>## [1] &quot;/home/chenya3i/Project/Playground/Deep-Feature-Selection/docs/markdowns&quot;</code></pre>
+<pre class="r"><code>source(&quot;../../src/utils.R&quot;)</code></pre>
 <pre class="r"><code>dirc = &quot;../../data/nonlinear/p_500_N_600_s_4/&quot;
 k = 0 # dataset index from 0 to 9
 X &lt;- read.table(paste(dirc, 'X_', toString(k), '.txt', sep=&quot;&quot;))
@@ -401,15 +400,44 @@ test_idx = sort(cbind(test_pos_idx, test_neg_idx)) # bind test sample index
 X_train = X[train_idx,] # extract training set
 y_train = y[train_idx,] # extract test set
 X_test = X[test_idx,]
-y_test = y[test_idx,]</code></pre>
+y_test = y[test_idx,]
+N = dim(X_train)[1]
+p = dim(X_train)[2]</code></pre>
 <p>The dimension of training set: (300, 500)</p>
 <ul>
 <li>The number of positive samples: 300</li>
 <li>The number of negative samples: 300</li>
 </ul>
+<p>The dimension of test set: (300, 500)</p>
+<ul>
+<li>The number of positive samples: 300</li>
+<li>The number of negative samples: 300</li>
+</ul>
 </div>
-<div id="gam" class="section level3">
-<h3>GAM</h3>
+<div id="generalized-additive-model-gam" class="section level3">
+<h3>Generalized Additive Model (GAM)</h3>
+<p>In this section, we will implement Generalized Additiveve Model(GAM) for variable selections and predictive preformance. We will use R package <code>gamsel</code>. We first use function <code>gamsel</code> fit regularization path. We then calculate BICs with respect to the regaluraization path and select the best <span class="math inline">\(\lambda\)</span>, and adopt the corresponding fitted model. <code>getActive</code> will help get the estimated support.</p>
+<pre class="r"><code>library(gamsel)
+gam = gamsel(X_train, y_train, family=&quot;binomial&quot;)
+SUPPs = getActive(gam, c(1:50))
+Ss = as.numeric(lapply(SUPPs, length))
+Y_Fits = predict(gam, X_train, type=&quot;response&quot;)
+LOSSes = apply(Y_Fits, 2, cross_entropy, y_true=y_train)
+BICs = BIC(LOSSes, Ss, N)
+best_idx = which.min(BICs)
+supp_gam = getActive(gam, index=c(best_idx), type=&quot;nonlinear&quot;)[[1]]
+train_err_gam = 1 - (sum((Y_Fits[, best_idx]&gt;=0.5)*1==y_train)/300.)
+Y_Preds = predict(gam, X_test, type=&quot;response&quot;)
+test_err_gam = 1 - (sum((Y_Preds[, best_idx]&gt;=0.5)*1==y_test)/300.)</code></pre>
+<p>The selected support is 1, 2, 3, 4, 480, the training error is 0.1266667, the test error is 0.14.</p>
+</div>
+<div id="random-forest" class="section level3">
+<h3>Random Forest</h3>
+<p>In this section, we will implement Random Forest(RF) for predictive performance and variable importance. We will use R package <code>h2o</code>. For the installation, please see <a href="https://docs.h2o.ai/h2o/latest-stable/h2o-docs/downloading.html"><em>h2o</em></a></p>
+<p>The selected support is 1, 2, 3, the training error is 0.1266667, the test error is 0.14.</p>
+</div>
+<div id="bayesian-additive-regression-treesbart" class="section level3">
+<h3>Bayesian Additive Regression Trees(BART)</h3>
 </div>
 </div>
 </div>
