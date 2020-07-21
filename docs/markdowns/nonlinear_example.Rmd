@@ -1,0 +1,96 @@
+---
+title: "Nonlinear example"
+author: "Yao Chen"
+date: "7/20/2020"
+output: html_document
+---
+
+# Deep Feature Selection
+
+In this markdown, we will demonstrate the comparison methods that are implemented in Table 2 of our paper.
+
+## User Guide on nonlinear example
+
+In this example, ...
+
+The following methods will be implemented:
+
+* GAM (Generalized Additive Model)
+* RF (Random Forest)
+* BART (Bayesian Additive Regression Trees)
+* SCAD
+* BNN (Bayesian Neural Networks)
+
+### Data Preparation
+In this section, we will read in the data that is generated using `nonlinear_generator` from `./src/utils.py`
+
+```{r}
+cross_entropy <- function(y_pred, y_true) {
+  loss = -mean((y_true*log(y_pred))+(1-y_true)*log(1-y_pred))
+  return(loss)
+}
+
+BIC <- function(loss, s, n) {
+  bic = 2*n*loss + s*log(n)
+  return(bic)
+}
+```
+
+
+```{r}
+dirc = "../../data/nonlinear/p_500_N_600_s_4/"
+k = 0 # dataset index from 0 to 9
+X <- read.table(paste(dirc, 'X_', toString(k), '.txt', sep=""))
+y <- read.table(paste(dirc, 'y_', toString(k), '.txt', sep=""))
+train_pos_idx = which(y == 1)[1:150] # take 150 positive observations for training set
+train_neg_idx = which(y == 0)[1:150] # take 150 negative observations for training set
+test_pos_idx = which(y == 1)[151:300] # take rest positive observations for test set
+test_neg_idx = which(y == 0)[151:300] # take rest negative observations for test set
+train_idx = sort(cbind(train_pos_idx, train_neg_idx)) # bind training sample index
+test_idx = sort(cbind(test_pos_idx, test_neg_idx)) # bind test sample index
+X_train = X[train_idx,] # extract training set
+y_train = y[train_idx,] # extract test set
+X_test = X[test_idx,]
+y_test = y[test_idx,]
+N = dim(X_train)[1]
+p = dim(X_train)[2]
+```
+
+The dimension of training set: (`r dim(X_train)`)
+
+* The number of positive samples: `r length(y_train==1)`
+* The number of negative samples: `r length(y_train==0)`
+
+The dimension of test set: (`r dim(X_test)`)
+
+* The number of positive samples: `r length(y_test==1)`
+* The number of negative samples: `r length(y_test==0)`
+
+### GAM
+
+In this section, we will implement Generalized Additve Model(GAM) for variable selections and predictive preformance. We will use R package `gamsel`. We first use function `cv.gamsel` to select proper $\lambda$ and fit with `gamsel` use selected $\lambda$, and finally get support use `getActive`.
+
+```{r, message=FALSE}
+library(gamsel)
+gam = gamsel(X_train, y_train, family="binomial")
+SUPPs = getActive(gam, c(1:50))
+Ss = as.numeric(lapply(SUPPs, length))
+Y_Preds = predict(gam, X_train, type="response")
+LOSSes = apply(Y_Preds, 2, cross_entropy, y_true=y_train)
+BICs = BIC(LOSSes, Ss, N)
+best_idx = which.min(BICs)
+supp_x = getActive(gam, index=c(best_idx), type="nonlinear")[[1]]
+train_err = 1 - (sum((Y_Preds[, best_idx]>=0.5)*1==y_train)/300.)
+test_err = 1 - (sum((Y_Preds[, best_idx]>=0.5)*1==y_test)/300.)
+(supp_x)
+(train_err)
+(test_err)
+```
+
+
+The selected support is `r supp_x`
+
+
+
+
+
