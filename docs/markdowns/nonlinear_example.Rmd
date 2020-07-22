@@ -84,9 +84,10 @@ The selected support is `r supp_gam`, the training error is `r train_err_gam`, t
 
 In this section, we will implement Random Forest(RF) for predictive performance and variable importance. We will use R package `h2o`. For the installation, please see [_h2o_](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/downloading.html)
 
-```{r, include=FALSE}
+```{r, echo=T results='markup'}
 library(h2o)
 h2o.init() # start a h2o session
+h2o.no_progress()
 # Transfer data to h2o objects
 data_train = as.h2o(cbind(X_train, y_train))
 data_train["y_train"] = as.factor(data_train["y_train"])
@@ -94,20 +95,20 @@ data_test = as.h2o(cbind(X_test, y_test))
 data_test["y_test"] = as.factor(data_test["y_test"])
 
 rf = h2o.randomForest(y="y_train", training_frame=data_train)
-supp_rf = c(1:500)[h2o.varimp(rf)$percentage>0.0125]
+supp_rf = c(1:500)[h2o.varimp(rf)$percentage>0.014]
 fit_rf = predict(rf, as.h2o(X_train))$predict
 pred_rf = predict(rf, as.h2o(X_test))$predict
 train_err_rf = 1 - sum(fit_rf==as.h2o(y_train))/300.
 test_err_rf = 1 - sum(pred_rf==as.h2o(y_test))/300.
 ```
 
-The selected support is `r supp_rf`, the training error is `r train_err_gam`, the test error is `r test_err_gam`.
+The selected support is `r supp_rf`, the training error is `r train_err_rf`, the test error is `r test_err_rf`.
 
 
 ### Bayesian Additive Regression Trees(BART)
 
 
-```{r, include=FALSE}
+```{r, message=FALSE}
 options(java.parameters = "-Xmx5g") # reserve 5G memory
 library(bartMachine)
 set_bart_machine_num_cores(4)
@@ -122,10 +123,16 @@ test_err_rf = 1 - sum(pred_bart==y_test)/300.
 ```
 
 
+The selected support is `r supp_bart`, the training error is `r train_err_bart`, the test error is `r test_err_bart`.
+
+
+### Bayesian Neural Networks
 
 
 
+```{r, eval=FALSE}
 
+```
 
 
 

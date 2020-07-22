@@ -1,5 +1,6 @@
 library(h2o)
 source("../src/utils.R")
+set.seed(1)
 
 SUPPs_RF = list() # to save support from best RF model 
 TRUEs_RF = list() # to save support from underlying model
@@ -8,7 +9,7 @@ ERR_test_RF = c() # to save the testing MSE using the best RF model
 
 h2o.init()
 for(k in 1:30) {
-    data_dir = "../data/nonlinear/p_500_N_600_s_4/"
+  data_dir = "../data/nonlinear/p_500_N_600_s_4/"
 	X = read.table(paste(data_dir, 'X_', toString(k-1), '.txt', sep=""))
 	y = read.table(paste(data_dir, 'y_', toString(k-1), '.txt', sep=""))
 	train_pos_idx = which(y == 1)[1:150]
@@ -21,19 +22,19 @@ for(k in 1:30) {
 	y_train = y[train_idx,]
 	X_test = X[test_idx,]
 	y_test = y[test_idx,]
-    data_train = as.h2o(cbind(X_train, y_train))
-    data_train["y_train"] = as.factor(data_train["y_train"])
-    data_test = as.h2o(cbind(X_test, y_test))
-    data_test["y_test"] = as.factor(data_test["y_test"])
-    
-    res = h2o.randomForest(y="y_train", training_frame=data_train)
-    supp_x = c(1:500)[h2o.varimp(res)$percentage>0.0125]
-    SUPPs_RF[[k]] = supp_x
-    TRUEs_RF[[k]] = c(1:4)
-    ERR_train_RF = c(ERR_train_RF, 
-                     1-(sum((predict(res, as.h2o(X_train))$predict == as.h2o(y_train))/300.)))
-    ERR_test_RF = c(ERR_test_RF, 
-                    1-(sum((predict(res, as.h2o(X_test))$predict == as.h2o(y_test))/300.)))
+  data_train = as.h2o(cbind(X_train, y_train))
+  data_train["y_train"] = as.factor(data_train["y_train"])
+  data_test = as.h2o(cbind(X_test, y_test))
+  data_test["y_test"] = as.factor(data_test["y_test"])
+  
+  res = h2o.randomForest(y="y_train", training_frame=data_train, seed=1)
+  supp_x = c(1:500)[h2o.varimp(res)$percentage>0.014]
+  SUPPs_RF[[k]] = supp_x
+  TRUEs_RF[[k]] = c(1:4)
+  ERR_train_RF = c(ERR_train_RF, 
+                   1-(sum((predict(res, as.h2o(X_train))$predict == as.h2o(y_train))/300.)))
+  ERR_test_RF = c(ERR_test_RF, 
+                  1-(sum((predict(res, as.h2o(X_test))$predict == as.h2o(y_test))/300.)))
 }
 
 measurements = measure(TRUEs_RF, SUPPs_RF)
@@ -52,3 +53,19 @@ for (k in 1:30) {
 (train_RF = c(mean(ERR_train_RF), sd(ERR_train_RF)))
 # Testing MSE
 (test_RF = c(mean(ERR_test_RF), sd(ERR_test_RF)))
+
+fileConn <- file("../outputs/reports/rf.txt")
+content <- c("Results of Random Forest",
+             "The false selection rate is:",
+             toString(fsr_RF),
+             "The negative selection rate is:",
+             toString(nsr_RF),
+             "The average s is:",
+             toString(len_RF),
+             "The average training error is:",
+             toString(train_RF),
+             "The average test error is:",
+             toString(test_RF))
+
+writeLines(content, fileConn)
+close(fileConn)

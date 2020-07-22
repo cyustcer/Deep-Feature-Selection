@@ -3,6 +3,7 @@ options(java.parameters="-Xmx5g")
 library(bartMachine)
 set_bart_machine_num_cores(4)
 source("../src/utils.R")
+set.seed(1)
 
 SUPPs_BART = list() # to save support from best BART model 
 TRUEs_BART = list() # to save support from underlying model
@@ -24,22 +25,23 @@ for (k in 1:30) {
 	X_test = X[test_idx,]
 	y_test = y[test_idx,]
 
-	bart_vs = bartMachine(X=X_train, y=y_train, num_trees=75)
+	bart_vs = bartMachine(X=X_train, y=y_train, num_trees=75, seed=1)
 	var_sel = var_selection_by_permute_cv(bart_vs)
-    supp_name = var_sel$importance_vars_cv
-    for(i in 1:length(supp_name)) {
-        supp_x = c(supp_x, strtoi(substr(supp_name[i], 2, nchar(supp_name[i]))))
-    }
-    SUPPs_BART[[k]] = supp_x
-    TRUEs_BART[[k]] = c(1, 2, 3, 4)
-    
-    bart = bartMachine(X=X_train, y=factor(y_train), num_trees=75)
-    fit_bart = predict(bart, X_train, type="class")
-    pred_bart = predict(bart, X_test, type="class")
-    ERR_train_BART = c(ERR_train_BART,
-                       1 - (sum(fit_bart == y_train)/300.))
-    ERR_test_BART = c(ERR_test_BART,
-                      1 - (sum(pred_bart == y_test)/300.))
+  supp_name = var_sel$important_vars_cv
+  supp_x = c()
+  for(i in 1:length(supp_name)) {
+      supp_x = c(supp_x, strtoi(substr(supp_name[i], 2, nchar(supp_name[i]))))
+  }
+  SUPPs_BART[[k]] = supp_x
+  TRUEs_BART[[k]] = c(1, 2, 3, 4)
+  
+  bart = bartMachine(X=X_train, y=factor(y_train), num_trees=75, seed=1)
+  fit_bart = predict(bart, X_train, type="class")
+  pred_bart = predict(bart, X_test, type="class")
+  ERR_train_BART = c(ERR_train_BART,
+                     1 - (sum(fit_bart == y_train)/300.))
+  ERR_test_BART = c(ERR_test_BART,
+                    1 - (sum(pred_bart == y_test)/300.))
 }
 
 
@@ -60,3 +62,18 @@ for (k in 1:30) {
 # Testing MSE
 (test_BART = c(mean(ERR_test_BART), sd(ERR_test_BART)))
 
+fileConn <- file("../outputs/reports/bart.txt")
+content <- c("Results of BART",
+             "The false selection rate is:",
+             toString(fsr_BART),
+             "The negative selection rate is:",
+             toString(nsr_BART),
+             "The average s is:",
+             toString(len_BART),
+             "The average training error is:",
+             toString(train_BART),
+             "The average test error is:",
+             toString(test_BART))
+
+writeLines(content, fileConn)
+close(fileConn)
