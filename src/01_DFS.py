@@ -98,17 +98,17 @@ for k in range(K):
 ############################################
 
 BICs = np.array(BICs)
-DIR_res = "./output/"
-np.savetxt(DIR_res+"linear_BICs.txt", BICs)
-np.savetxt(DIR_res+"linear_train_1step.txt", np.array(ERR_train_1))
-np.savetxt(DIR_res+"linear_test_1step.txt", np.array(ERR_test_1))
-np.savetxt(DIR_res+"linear_train_2step.txt", np.array(ERR_train))
-np.savetxt(DIR_res+"linear_test_2step.txt", np.array(ERR_test))
-supp_file = open(DIR_res+"linear_supp.txt", "a")
-for supp in SUPPs:
-    supp_file.write(str(supp))
-    supp_file.write("\n")
-supp_file.close()
+DIR_res = "../outputs/models/"
+#np.savetxt(DIR_res+"linear_BICs.txt", BICs)
+#np.savetxt(DIR_res+"linear_train_1step.txt", np.array(ERR_train_1))
+#np.savetxt(DIR_res+"linear_test_1step.txt", np.array(ERR_test_1))
+#np.savetxt(DIR_res+"linear_train_2step.txt", np.array(ERR_train))
+#np.savetxt(DIR_res+"linear_test_2step.txt", np.array(ERR_test))
+#supp_file = open(DIR_res+"linear_supp.txt", "a")
+#for supp in SUPPs:
+#    supp_file.write(str(supp))
+#    supp_file.write("\n")
+#supp_file.close()
 
 fsr, nsr = measure(TRUEs, SUPPs)
 final_report = "For " + str(K) + " datasets:\n"

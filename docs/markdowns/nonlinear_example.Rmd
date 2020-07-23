@@ -2,9 +2,11 @@
 title: "Nonlinear example"
 author: "Yao Chen"
 date: "7/20/2020"
-output: 
+output:
+  pdf_document:
+    toc: yes
   html_document:
-    toc: TRUE
+    toc: yes
 ---
 
 # Deep Feature Selection

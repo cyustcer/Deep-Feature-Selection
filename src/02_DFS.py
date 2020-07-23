@@ -102,17 +102,17 @@ for k in range(K):
 ### Metric calculation and result saving ###
 ############################################
 BICs = np.array(BICs)
-DIR_res = "./"
-np.savetxt(DIR_res+"nonlinear_BICs.txt", BICs)
-np.savetxt(DIR_res+"nonlinear_train_1step.txt", np.array(ERR_train_1))
-np.savetxt(DIR_res+"nonlinear_test_1step.txt", np.array(ERR_test_1))
-np.savetxt(DIR_res+"nonlinear_train_2step.txt", np.array(ERR_train))
-np.savetxt(DIR_res+"nonlinear_test_2step.txt", np.array(ERR_test))
-supp_file = open(DIR_res+"nonlinear_supp.txt", "a")
-for supp in SUPPs:
-    supp_file.write(str(supp))
-    supp_file.write("\n")
-supp_file.close()
+DIR_res = "../outputs/models/"
+#np.savetxt(DIR_res+"nonlinear_BICs.txt", BICs)
+#np.savetxt(DIR_res+"nonlinear_train_1step.txt", np.array(ERR_train_1))
+#np.savetxt(DIR_res+"nonlinear_test_1step.txt", np.array(ERR_test_1))
+#np.savetxt(DIR_res+"nonlinear_train_2step.txt", np.array(ERR_train))
+#np.savetxt(DIR_res+"nonlinear_test_2step.txt", np.array(ERR_test))
+#supp_file = open(DIR_res+"nonlinear_supp.txt", "a")
+#for supp in SUPPs:
+#    supp_file.write(str(supp))
+#    supp_file.write("\n")
+#supp_file.close()
 
 fsr, nsr = measure(TRUEs, SUPPs)
 final_report = "For " + str(K) + " datasets:\n"

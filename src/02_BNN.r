@@ -2,6 +2,7 @@ library(BNN)
 source("../src/utils.R")
 set.seed(1)
 
+#for (i in 1:nrow(parms)) {
 k = as.integer(commandArgs(TRUE))
 X <- read.table(paste('../data/nonlinear/p_500_N_600_s_4/X_', toString(k-1), '.txt', sep=""))
 y <- read.table(paste('../data/nonlinear/p_500_N_600_s_4/y_', toString(k-1), '.txt', sep=""))
@@ -19,7 +20,8 @@ X_data = rbind(X_train, X_test)
 y_data = as.factor(c(y_train, y_test))
 lbds = c(0.025, 0.05, 0.1, 0.2, 0.3)
 for (lbd in lbds) {
-    bnn = BNNsel(X_data, y_data, train_num=300, hid_num=3, lambda=lbd,
-                 total_iteration=1000000, popN=20, nCPUs=10)
-    save(bnn, file=paste("Results/BNN/bnn_", toString(k-1), "_", toString(lbd), ".RData", sep=""))
+  bnn = BNNsel(X_data, y_data, train_num=300, hid_num=3, lambda=lbd, 
+               total_iteration=1000000, popN=20, nCPUs=10)
+  save(bnn, file=paste("../outputs/models/bnn_", toString(k-1), "_", toString(lbd), ".RData", sep=""))
 }
+
