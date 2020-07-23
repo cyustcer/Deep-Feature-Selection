@@ -15,6 +15,8 @@ read_data <- function(k,
 }
 
 cross_entropy <- function(y_pred, y_true) {
+  
+  y_pred = (y_pred>=1)*0.9999 + (y_pred<1&y_pred>0)*y_pred + (y_pred<0)*0.0001
   loss = -mean((y_true*log(y_pred))+(1-y_true)*log(1-y_pred))
   return(loss)
 }
@@ -22,6 +24,21 @@ cross_entropy <- function(y_pred, y_true) {
 BIC <- function(loss, s, n) {
   bic = 2*n*loss + s*log(n)
   return(bic)
+}
+
+EBIC <- function(fit, true, s, n, c=100) {
+  sigma2 = mean((fit - true)^2)
+  ebic = n*log(sigma2) + c*s*log(n)
+  return(ebic)
+}
+
+EBICseq <- function(y_fits, true, Ss, n, c=3) {
+  EBICs = c()
+  for (i in 1:ncol(Y_Fits)) {
+    ebic = n*log(mean((y_fits[, i]-true)^2)) + c*Ss[i]*log(n)
+    EBICs = c(EBICs, ebic)
+  }
+  return(EBICs)
 }
 
 ### Function to calculate the fsr and nsr

@@ -1,0 +1,140 @@
+---
+title: "Linear example"
+author: "Yao Chen"
+date: "7/22/2020"
+output: 
+  html_document:
+    toc: TRUE
+---
+
+# Deep Feature Selection
+
+In this markdown, we will demonstrate the comparison methods that are implemented in Table 2 of our paper.
+
+## User Guide on nonlinear example
+
+In this example, a high dimensional dataset with 1000 covariates and 500 observations is generated using the linear system:
+
+$$y=X\beta+\epsilon$$
+
+where $\beta \in \mathbb{R}^{1000}$, but only the first 100 elements of $\beta$ is non-zero. Our task is to correctly select the important variables. Please see section 5.1 of the paper for detailed generation process.
+
+In the markdown, the following methods will be implemented:
+
+* LASSO
+* Elastic Net
+* SCAD
+
+### Data Preparation
+In this section, we will read in the data that is generated using `linear_generator` from `./src/utils.py`
+
+```{r}
+source("../../src/utils.R")
+```
+
+
+```{r}
+dirc = "../../data/linear/p_1000_N_1000_s_100/"
+k = 0 # dataset index from 0 to 9
+X <- read.table(paste(dirc, 'X_', toString(k), '.txt', sep=""))
+y <- read.table(paste(dirc, 'y_', toString(k), '.txt', sep=""))
+beta <- read.table(paste(dirc, "beta_", toString(k), '.txt', sep=""))
+supp = which(beta!=0)
+X_train = as.matrix(X[1:500,])
+y_train = y[1:500,]
+X_test = as.matrix(X[501:1000,])
+y_test = y[501:1000,]
+N = dim(X_train)[1]
+p = dim(X_train)[2]
+```
+
+### LASSO
+In this section, we will implement LASSO for variable selections and predictive preformance. We will use R package ___glmnet___. We will use function `glmnet` with $\alpha=1$. A sequence of $\lambda$ will be tested and the best model will be selected based on EBIC.
+
+```{r, message=FALSE}
+library(glmnet)
+LAMBDAs = exp(seq(log(0.05), log(5), length.out=100))
+lasso = glmnet(as.matrix(X_train), as.matrix(y_train), 
+               lambda=LAMBDAs, alpha=1, seed=1)
+
+Ss = colSums(lasso$beta!=0)
+Y_Fits = predict(lasso, X_train)
+Y_Preds = predict(lasso, X_test)
+EBICs = EBICseq(Y_Fits, y_train, Ss, N)
+best_idx = which.min(EBICs)
+
+supp_lasso = c(1:1000)[lasso$beta[, best_idx]!=0]
+train_mse_lasso = mean((Y_Fits[, best_idx]-y_train)^2)
+test_mse_lasso = mean((Y_Preds[, best_idx]-y_test)^2)
+fs_lasso = setdiff(supp_lasso, supp)
+ns_lasso = setdiff(supp, supp_lasso)
+```
+
+The false selected variable: `r fs_lasso`
+
+The negative selected variable: `r ns_lasso`
+
+The training MSE is `r train_mse_lasso`, the test MSE is `r test_mse_lasso`
+
+### Elastic Net
+
+In this section, we will implement LASSO for variable selections and predictive preformance. We will use R package ___glmnet___. We will use function `glmnet` with a range of $\alpha$ from 0 to 0.5. A sequence of $\lambda$ will be tested and the best model will be selected based on EBIC.
+
+```{r, message=FALSE}
+LAMBDAs = exp(seq(log(0.001), log(10), length.out=100))
+ALPHAs = seq(0., 0.5, length.out=20)
+EBICs_elastic = c()
+for (alpha in ALPHAs) {
+  elastic = glmnet(as.matrix(X_train), as.matrix(y_train), 
+                   alpha=alpha, lambda=LAMBDAs, seed=1)
+  
+  Ss = colSums(elastic$beta!=0)
+  Y_Fits = predict(elastic, X_train)
+  Y_Preds = predict(elastic, X_test)
+  EBICs = EBICseq(Y_Fits, y_train, Ss, N)
+  best_idx = which.min(EBICs)
+  EBICs_elastic = c(EBICs_elastic, min(EBICs))
+  if (min(EBICs) == min(EBICs_elastic)) {
+    supp_elastic = c(1:1000)[elastic$beta[, best_idx]!=0]
+    train_mse_elastic = mean((Y_Fits[, best_idx]-y_train)^2)
+    test_mse_elastic = mean((Y_Preds[, best_idx]-y_test)^2)
+    fs_elastic = setdiff(supp_elastic, supp)
+    ns_elastic = setdiff(supp, supp_elastic)
+  }
+}
+```
+
+The false selected variable: `r fs_elastic`
+
+The negative selected variable: `r ns_elastic`
+
+The training MSE is `r train_mse_elastic`, the test MSE is `r test_mse_elastic`
+
+### SCAD
+
+In this section, we will implement SCAD for variable selections and predictive preformance. We will use R package ___ncvreg___. Function `ncvreg` will be used to train the model with SCAD penalty and a sequence of $\lambda$.
+
+```{r}
+library(ncvreg)
+LAMBDAs = exp(seq(log(1), log(0.01), length.out=100))
+scad = ncvreg(X_train, y_train, penalty="SCAD", 
+              lambda = LAMBDAs, seed=1)
+
+Ss = predict(scad, X_train, type="nvars")
+Y_Fits = predict(scad, X_train)
+Y_Preds = predict(scad, X_test)
+EBICs = EBICseq(Y_Fits, y_train, Ss, N)
+best_idx = which.min(EBICs)
+
+supp_scad = c(1:1000)[scad$beta[, best_idx]!=0]
+train_mse_scad = mean((Y_Fits[, best_idx]-y_train)^2)
+test_mse_scad = mean((Y_Preds[, best_idx]-y_test)^2)
+fs_scad = setdiff(supp_scad, supp)
+ns_scad = setdiff(supp, supp_scad)
+```
+
+The false selected variable: `r fs_scad`
+
+The negative selected variable: `r ns_scad`
+
+The training MSE is `r train_mse_scad`, the test MSE is `r test_mse_scad`

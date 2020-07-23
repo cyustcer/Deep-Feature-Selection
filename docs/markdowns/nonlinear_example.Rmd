@@ -2,7 +2,9 @@
 title: "Nonlinear example"
 author: "Yao Chen"
 date: "7/20/2020"
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
 ---
 
 # Deep Feature Selection
@@ -11,15 +13,25 @@ In this markdown, we will demonstrate the comparison methods that are implemente
 
 ## User Guide on nonlinear example
 
-In this example, ...
+In this example, a high dimensional dataset with 500 covariates and 300 observations is generated using the following equation.
 
-The following methods will be implemented:
+\begin{equation}
+    y=\begin{cases}
+        1, & e^{x_1} + x_2^2 + 5\sin(x_3 x_4) - 3 > 0\\
+        0, & \text{otherwise,}
+    \end{cases}
+\end{equation}
+
+i.e. among 500 covariates, only the first 4 variables actually contributed to the response. Our task is to correctly select the important variables. Please see section 5.2 of the paper for detailed generation process.
+
+In the markdown, the following methods will be implemented:
 
 * Generalized Additive Model(GAM)
 * Random Forest(RF)
 * Bayesian Additive Regression Trees(BART)
-* SCAD
 * Bayesian Neural Networks(BNN)
+
+SCAD here is only used for benchmark as the best method in linear example, and tell it has totally failed in this example. Thus the details will not be demonstrated here. Please find linear example in `../docs/markdowns/`.
 
 ### Data Preparation
 In this section, we will read in the data that is generated using `nonlinear_generator` from `./src/utils.py`
@@ -60,17 +72,19 @@ The dimension of test set: (`r dim(X_test)`)
 
 ### Generalized Additive Model (GAM)
 
-In this section, we will implement Generalized Additiveve Model(GAM) for variable selections and predictive preformance. We will use R package `gamsel`. We first use function `gamsel` fit regularization path. We then calculate BICs with respect to the regaluraization path and select the best $\lambda$, and adopt the corresponding fitted model. `getActive` will help get the estimated support.
+In this section, we will implement Generalized Additiveve Model(GAM) for variable selections and predictive preformance. We will use R package ___gamsel___. We first use function `gamsel` fit regularization path. We then calculate BICs with respect to the regaluraization path and select the best $\lambda$, and adopt the corresponding fitted model. `getActive` will help get the estimated support.
 
 ```{r, message=FALSE}
 library(gamsel)
 gam = gamsel(X_train, y_train, family="binomial")
+
 SUPPs = getActive(gam, c(1:50))
 Ss = as.numeric(lapply(SUPPs, length))
 Y_Fits = predict(gam, X_train, type="response")
 LOSSes = apply(Y_Fits, 2, cross_entropy, y_true=y_train)
 BICs = BIC(LOSSes, Ss, N)
 best_idx = which.min(BICs)
+
 supp_gam = getActive(gam, index=c(best_idx), type="nonlinear")[[1]]
 train_err_gam = 1 - (sum((Y_Fits[, best_idx]>=0.5)*1==y_train)/300.)
 Y_Preds = predict(gam, X_test, type="response")
@@ -82,9 +96,10 @@ The selected support is `r supp_gam`, the training error is `r train_err_gam`, t
 
 ### Random Forest
 
-In this section, we will implement Random Forest(RF) for predictive performance and variable importance. We will use R package `h2o`. For the installation, please see [_h2o_](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/downloading.html)
+In this section, we will implement Random Forest(RF) for predictive performance and variable importance. We will use R package ___h2o___. For the installation, please see [___h2o___](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/downloading.html). To use `h2o`, you need to initial a session by calling `h2o.init()`, and make sure all your data is in `h2o` objects. Then function `h2o.randomForest` can be used for the training. Here we take the default settings.
 
-```{r, echo=T results='markup'}
+
+```{r, message=FALSE}
 library(h2o)
 h2o.init() # start a h2o session
 h2o.no_progress()
@@ -94,7 +109,7 @@ data_train["y_train"] = as.factor(data_train["y_train"])
 data_test = as.h2o(cbind(X_test, y_test))
 data_test["y_test"] = as.factor(data_test["y_test"])
 
-rf = h2o.randomForest(y="y_train", training_frame=data_train)
+rf = h2o.randomForest(y="y_train", training_frame=data_train, seed=1)
 supp_rf = c(1:500)[h2o.varimp(rf)$percentage>0.014]
 fit_rf = predict(rf, as.h2o(X_train))$predict
 pred_rf = predict(rf, as.h2o(X_test))$predict
@@ -107,19 +122,23 @@ The selected support is `r supp_rf`, the training error is `r train_err_rf`, the
 
 ### Bayesian Additive Regression Trees(BART)
 
+In this section, we will implement Bayesian Additive Regression Trees (BART) for predictive performance and variable selection. We will use R package ___bartMachine___. However, this methods take significant time and resource. You can set up some options, like memory size and number of cores used, to speed up the computing. Function `bartMachine` is used for the training and function `var_selection_by_permute_cv` is used for selecting variables.
+
 
 ```{r, message=FALSE}
 options(java.parameters = "-Xmx5g") # reserve 5G memory
 library(bartMachine)
 set_bart_machine_num_cores(4)
-bart_vs = bartMachine(X=X_train, y=(y_train), num_trees=75)
+
+bart_vs = bartMachine(X=X_train, y=(y_train), num_trees=75, seed=1)
 var_sel = var_selection_by_permute_cv(bart_vs)
-bart = bartMachine(X=X_train, y=factor(y_train), num_trees=75)
+bart = bartMachine(X=X_train, y=factor(y_train), num_trees=75, seed=1)
+
 supp_bart = var_sel$important_vars_cv
 fit_bart = predict(bart, X_train, type="class")
 pred_bart = predict(bart, X_test, type="class")
-train_err_rf = 1 - sum(fit_bart==y_train)/300.
-test_err_rf = 1 - sum(pred_bart==y_test)/300.
+train_err_bart = 1 - sum(fit_bart==y_train)/300.
+test_err_bart = 1 - sum(pred_bart==y_test)/300.
 ```
 
 
@@ -128,12 +147,22 @@ The selected support is `r supp_bart`, the training error is `r train_err_bart`,
 
 ### Bayesian Neural Networks
 
-
+In this section, we will implement Bayesian Neural Network (BNN) for predictive performance and variable selection. We will use R package ___BNN___. This method take significant time to run in markdown. We only demonstrate the code here and load pre-trained model in `../../outputs/models/` to show the results. `BNNsel` function is not reproducable as there is no arugment of `seed` in it. We tried to set seed at the begining of the script, but was unable to get the exact same model.
 
 ```{r, eval=FALSE}
-
+library(BNN)
+X_data = rbind(X_train, X_test)
+y_data = as.factor(c(y_train, y_test))
+bnn = BNNsel(X_data, y_data, train_num=300, hid_num=3, lambda=0.5, 
+             total_iteration=1000000, popN=20, nCPUs=10)
 ```
 
 
+```{r}
+load('../../outputs/models/bnn_0_0.2.RData')
+supp_bnn = c(1:500)[bnn$mar[2:501] == 1] # bnn includes intercept
+train_err_bnn = 1 - sum((bnn$fit>0.5)*1 == y_train)/300.
+test_err_bnn = 1 - sum((bnn$pred>0.5)*1 == y_test)/300.
+```
 
-
+The selected support is `r supp_bnn`, the training error is `r train_err_bnn`, the test error is `r test_err_bnn`.
