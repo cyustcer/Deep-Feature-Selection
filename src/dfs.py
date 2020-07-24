@@ -108,11 +108,13 @@ def training_n(X, Y, X_test, Y_test, c, s,
         _optimizer.step()
     
     bic = (loss.data.numpy().tolist())*N*2. + s*np.log(N) # bic based on final model
-    return best_model, best_supp, bic, [_err_train, _err_test], LOSSES
+    err_train = 1-accuracy(best_model, X, Y)
+    err_test = 1-accuracy(best_model, X_test, Y_test)
+    return best_model, best_supp, bic, [_err_train, _err_test], [err_train, err_test]
 
 
 def training_l(X, Y, X_test, Y_test, supp, c, s,
-               epochs=10, n_hidden1=1, learning_rate=0.01, Ts=1000, step=1):
+               epochs=10, n_hidden1=1, learning_rate=0.01, Ts=1000, step=1, C=3.):
     N, p = X.shape
     torch.manual_seed(1) # set seed 
     # Define neural network model
@@ -150,7 +152,7 @@ def training_l(X, Y, X_test, Y_test, supp, c, s,
     ns = set(supp).difference(best_supp) # negative selection number
     _err_train = mse(best_model, X, Y) # training error
     _err_test = mse(best_model, X_test, Y_test) # testing error
-    _bic = N*np.log(_err_train) + 3.*s*np.log(N) # bic
+    _bic = N*np.log(_err_train) + C*s*np.log(N) # bic
     
     ### Second step training (for two-step procedure)
     _optimizer = torch.optim.Adam(list(best_model.parameters())[1:], lr=0.5)
@@ -162,5 +164,7 @@ def training_l(X, Y, X_test, Y_test, supp, c, s,
         _optimizer.step()
         hist.append(loss.data.numpy().tolist())
     
-    bic = N*np.log(loss.data.numpy().tolist()) + 3.*s*np.log(N) # bic based on final model
-    return best_model, best_supp, [_bic, bic], [_err_train, _err_test], len(fs), len(ns), hist
+    bic = N*np.log(loss.data.numpy().tolist()) + C*s*np.log(N) # bic based on final model
+    err_train = mse(best_model, X, Y)
+    err_test = mse(best_model, X_test, Y_test)
+    return best_model, best_supp, bic, [_err_train, _err_test], [err_train, err_test]

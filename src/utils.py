@@ -13,7 +13,7 @@ from torch.autograd import Variable
 np.random.seed(1)
 def linear_generator(p, N, s, K=10):
     np.random.seed(1)
-    directory = './data/linear/p_' + str(p) + '_N_' + str(N) + '_s_' + str(s)
+    directory = '../data/linear/p_' + str(p) + '_N_' + str(N) + '_s_' + str(s)
     if not os.path.exists(directory):
         os.makedirs(directory)
     for k in range(K):
@@ -46,7 +46,7 @@ def linear_generator(p, N, s, K=10):
 np.random.seed(1)
 def nonlinear_generator(N=500, s=4, p=500, K=10):
     np.random.seed(1)
-    directory = './data/nonlinear/p_' + str(p) + '_N_' + str(N) + '_s_' + str(s)
+    directory = '../data/nonlinear/p_' + str(p) + '_N_' + str(N) + '_s_' + str(s)
     if not os.path.exists(directory):
         os.makedirs(directory)
     for k in range(K):
@@ -73,7 +73,7 @@ def nonlinear_generator(N=500, s=4, p=500, K=10):
                 nneg += 1
                 ss += 1
             steps += 1
-        print(steps)
+        #print(steps)
         X_all = np.concatenate(X)
         y = np.array(y)
         fn_X = directory + '/X_' + str(k) + '.txt'
@@ -84,7 +84,7 @@ def nonlinear_generator(N=500, s=4, p=500, K=10):
 ##############################
 ### Data Loading functions ###
 ##############################
-def data_load_n(k, normalization=False, directory="./data/nonlinear/p_500_N_600_s_4/"):
+def data_load_n(k, normalization=False, directory="../data/nonlinear/p_500_N_600_s_4/"):
     # Directory for the datasets
     x = np.loadtxt(directory+'X_'+str(k)+'.txt')
     y = np.loadtxt(directory+'y_'+str(k)+'.txt')
@@ -117,7 +117,7 @@ def data_load_n(k, normalization=False, directory="./data/nonlinear/p_500_N_600_
     X_test, Y_test = Variable(X_test), Variable(Y_test)
     return X, Y, X_test, Y_test
 
-def data_load_l(k, normalization=True, directory = './data/linear/p_1000_N_1000_s_100/'):
+def data_load_l(k, normalization=True, directory = '../data/linear/p_1000_N_1000_s_100/'):
     # Directory for the datasets
     x = np.loadtxt(directory+'X_'+str(k)+'.txt')
     y = np.loadtxt(directory+'y_'+str(k)+'.txt')
