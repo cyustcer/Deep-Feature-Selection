@@ -16,36 +16,23 @@ The source code files are organized in two perspectives.
    - models.py contains Neural network models used for simulation studies
    - dfs.py contains function for one DFS algorithm iteration, and wrapped up functions for training simulation studies with fixed $s$.
 
-1. functions files (tools.py, models.py, dfs.py)
-    * utils.py contains:
-        - dataset generators (linear_generator, nonlinear_generator), for simulation studies;
-        - data loading function (data_load_l, data_load_n), for data read-in and pre-process;
-        - metrics calculation functions (measure, accuracy, mse), for the calculation of (fsr, nsr), accuracy, mse;
-        - model needed elements (WeightNorm, DotProduct), for the weight normalization and selection layer in PyTorch Neural network definition.
-    * models.py contains Neural network models used for simulation studies
-    * dfs.py contains function for one DFS algorithm iteration, and wrapped up functions for training simulation studies
-    
-2. Training files (01_linear_DFS.py, 01_linear_Lasso_Elastic.py, 01_linear_SCAD.r, 02_nonlinear.py)
-    * 01_linear.py: DFS models training for linear regression example
-    * 02_nonlinear.py: DFS models training for nonlinear classification example
-
 ## Packages
 Here we list the packages we used for our methods and comparison methods
 
 ### Python packages for DFS
 
-* ___Pytorch___
-* ___numpy___
-* ___pandas___
+* [___Pytorch___](https://pytorch.org/)
+* [___numpy___](https://numpy.org/)
+* [___pandas___](https://pandas.pydata.org/)
 
 ### R packages
 
-* ___glmnet___ (For LASSO and Elastic Net)
-* ___ncvreg___ (For SCAD)
-* ___bartMachine___ (For Bayesian Additive Regression Tree)
-* ___gamsel___ (For Generalized Additive Models)
-* ___BNN___ (For Bayesian Neural Networks)
-* ___h2o___ (For Random Forest)
+* [___glmnet___](https://cran.r-project.org/web/packages/glmnet/index.html) (For LASSO and Elastic Net)
+* [___ncvreg___](https://cran.r-project.org/web/packages/ncvreg/index.html) (For SCAD)
+* [___bartMachine___](https://cran.r-project.org/web/packages/bartMachine/index.html) (For Bayesian Additive Regression Tree)
+* [___gamsel___](https://cran.r-project.org/web/packages/gamsel/index.html) (For Generalized Additive Models)
+* [___BNN___](https://cran.r-project.org/web/packages/BNN/index.html) (For Bayesian Neural Networks)
+* [___h2o___](https://cran.r-project.org/web/packages/h2o/index.html) (For Random Forest)
 
 ## Computing Environment
 We have provided the guidance of implement our methods in `../docs/notebooks/`. If you are interested in replicate our results, please make sure you are in the same environment as ours.
