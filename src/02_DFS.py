@@ -23,7 +23,7 @@ from dfs import DFS_epoch, training_n
 #######################
 ### Data Generation ###
 #######################
-K = 5
+K = 3
 N = 600
 p = 500
 s = 4
