@@ -87,7 +87,7 @@ For DFS method, each training codes consists of 4 major parts:
 3. Single dataset training and tuning for s (see `../docs/notebooks/`)
 4. Multiple datasets training
 
-Simply using command: "python xxx.py &" under `src` directory. Result files and reports will be saved under `outputs/reports` directory.
+Simply using command: `python xxx.py &` under `src` directory. Result files and reports will be saved under `outputs/reports` directory.
 Here is the example report for the nonlinear classification example with 10 datasets:
 
 ```
@@ -138,6 +138,6 @@ For datasets 9:
     Testing Accuray: 0.9566666666666667
 ```
 
-For comparison methods, simply using command: "Rscript xxx.r &" under `src` directory. Result files and reports will be saved under `outputs/reports` directory.
+For comparison methods, simply using command: `Rscript xxx.r &` under `src` directory. Result files and reports will be saved under `outputs/reports` directory.
 
 
