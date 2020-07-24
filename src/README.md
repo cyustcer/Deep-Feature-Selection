@@ -1,8 +1,20 @@
-Please read before using provided codes !!!
-
-The codes includes two major parts:
+# Source Codes
+This folder contains the necessary files for the implement of our methods (`.py`) and comparison methods (`.r`). Please see the following for the details.
 
 ## Source Files
+
+The source code files are organized in two perspectives. 
+* `0i_xxx.xx`, the files start with number either `01` or `02` and followed by methods name is the implementation files of each methods.
+   - `01` indicates linear regression examples
+   - `02` indicates nonlinear classification examples
+* `utils.xx`, `dfs.py` and `models.py`
+   - `utils.xx` contains
+        - dataset generators (linear_generator, nonlinear_generator), for simulation studies;
+        - data loading function (data_load_l, data_load_n), for data read-in and pre-process;
+        - metrics calculation functions (measure, accuracy, mse), for the calculation of (fsr, nsr), accuracy, mse;
+        - model needed elements (WeightNorm, DotProduct), for the weight normalization and selection layer in PyTorch Neural network definition.
+   - models.py contains Neural network models used for simulation studies
+   - dfs.py contains function for one DFS algorithm iteration, and wrapped up functions for training simulation studies with fixed $s$.
 
 1. functions files (tools.py, models.py, dfs.py)
     * utils.py contains:
@@ -17,11 +29,30 @@ The codes includes two major parts:
     * 01_linear.py: DFS models training for linear regression example
     * 02_nonlinear.py: DFS models training for nonlinear classification example
 
-## Python environment
+## Packages
+Here we list the packages we used for our methods and comparison methods
+
+### Python packages for DFS
+
+* Pytorch
+* numpy
+* pandas
+
+### R packages
+
+* glmnet (For LASSO and Elastic Net)
+* ncvreg (For SCAD)
+* bartMachine (For Bayesian Additive Regression Tree)
+* gamsel (For Generalized Additive Models)
+* BNN (For Bayesian Neural Networks)
+* h2o (For Random Forest)
+
+## Computing Environment
+We have provided the guidance of implement our methods in `../docs/notebooks/`. If you are interested in replicate our results, please make sure you are in the same environment as ours.
+
+### Python environment
 
 Current code works under both Python 2 and Python 3.
-
-To use code in Python 2 & 3, please refer jupyter notebook in `../docs/notebooks/`
 To replicate results in paper, please create the environment following these steps:
 
 ```bash
@@ -36,9 +67,6 @@ Package Versions:
     - numpy: 1.14.3
     - pandas: 0.21.0
     - torch: 0.3.0.post4
-    - sklearn: 0.19.1
-* R:
-    - ncvreg: 3.10-0 
     
 
 
@@ -48,16 +76,18 @@ Package Versions:
     - Intel(R) Xeon(R) CPU E5-2660 v3 @ 2.60GHz (1 thread per core, single thread used for the experiment)
 
 
-## Guidance of code using:
+### Guidance of code using:
 
-Each training codes consists of 4 major parts:
+After you have the required python and R packages installed, you can follow the steps to get a text report of multiple datasets.
+
+For DFS method, each training codes consists of 4 major parts:
 
 1. Data Generation (only need once for simulation each example, seed is set in generator functions)
 2. Data Loading (see `../docs/notebooks/`)
 3. Single dataset training and tuning for s (see `../docs/notebooks/`)
 4. Multiple datasets training
 
-For DFS method, simply using command: "python xxx.py &" under `src` directory. Result files and reports will be saved under current directory.
+Simply using command: "python xxx.py &" under `src` directory. Result files and reports will be saved under `outputs/reports` directory.
 Here is the example report for the nonlinear classification example with 10 datasets:
 
 ```
@@ -107,5 +137,7 @@ For datasets 9:
     Training Accuracy: 1.0
     Testing Accuray: 0.9566666666666667
 ```
+
+For comparison methods, simply using command: "Rscript xxx.r &" under `src` directory. Result files and reports will be saved under `outputs/reports` directory.
 
 
