@@ -23,10 +23,11 @@ from dfs import DFS_epoch, training_n
 #######################
 ### Data Generation ###
 #######################
+K = 5
 N = 600
 p = 500
-K = 100
 s = 4
+# Generate K datasets, you only need to do this once
 np.random.seed(1)
 # nonlinear_generator(N, s, p, K) # Generate K datasets in DATA/nonlinear/p_500_N_600_s_4/
 
@@ -77,34 +78,22 @@ Report = "" # Text report for linear regression methods
 BICs = [] # BICs over different s for each datasets, for the purpose of plotting 
 SUPPs = [] # best support selected for each datasets
 TRUEs = [] # true support for each datasets
-#ERR_train_1 = [] # one-step training error
-#ERR_test_1 = [] # one-step testing error
 ERR_train = [] # two-step training error
 ERR_test = [] # two-step testing error
 
-
-optimal_c = np.repeat(1., 100)
-optimal_c[:10] = np.array([1, 1, 1, 2, 1.5, 1, 1, 1, 2.5, 1]) # Well tuned lambdas for first 10 datasets
-#optimal_c[10:20] = np.array([0.75, 1, 1, 1.25, 1, 1, 1.25, 1, 3, 0.8])
-#optimal_c[20:30] = np.array([0.75, 0.7, 1, 1.25, 1.25, 1, 1, 1, 1, 2]) 
-
 ### Training Over K datasets (K is set to 5 for shorter training time)
-K = 5
+K = 3
 for k in range(K):
-    #X, Y, X_test, Y_test = data_load_n(k) # data load for two-step error calculation
-    res = optimal_s(k, optimal_c=optimal_c[k]) # single datasets training
-    #accu_train = accuracy(model, X, Y) # two-step training accuracy
-    #accu_test = accuracy(model, X_test, Y_test) # two-step testing accuracy
+    res = optimal_s(k) # single datasets training
     ### automatic text report
     Report += res["report"]
+    Report += "    Selected Variables: "+str(res["support"])+"\n"
     Report += "    Training Accuracy: "+str(res["train_accu"])+"\n"
     Report += "    Testing Accuray: "+str(res["test_accu"])+"\n"
     # Results saving
     BICs.append(res["BICs"])
     SUPPs.append(res["support"])
     TRUEs.append(set([0, 1, 2, 3]))
-    #ERR_train_1.append(errs[0])
-    #ERR_test_1.append(errs[1])
     ERR_train.append(1-res["train_accu"])
     ERR_test.append(1-res["test_accu"])
 
@@ -113,16 +102,6 @@ for k in range(K):
 ############################################
 BICs = np.array(BICs)
 DIR_res = "../outputs/reports/"
-#np.savetxt(DIR_res+"nonlinear_BICs.txt", BICs)
-#np.savetxt(DIR_res+"nonlinear_train_1step.txt", np.array(ERR_train_1))
-#np.savetxt(DIR_res+"nonlinear_test_1step.txt", np.array(ERR_test_1))
-#np.savetxt(DIR_res+"nonlinear_train_2step.txt", np.array(ERR_train))
-#np.savetxt(DIR_res+"nonlinear_test_2step.txt", np.array(ERR_test))
-#supp_file = open(DIR_res+"nonlinear_supp.txt", "a")
-#for supp in SUPPs:
-#    supp_file.write(str(supp))
-#    supp_file.write("\n")
-#supp_file.close()
 
 fsr, nsr = measure(TRUEs, SUPPs)
 final_report = "For " + str(K) + " datasets:\n"
