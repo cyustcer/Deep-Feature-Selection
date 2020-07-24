@@ -16,7 +16,8 @@
 !docs/
 !docs/markdowns/
 !docs/notebooks/
-!scripts/
+!outputs/models/
+!outputs/reports/
 
 # Except files
 !*.py
@@ -29,3 +30,4 @@
 !*.Rmd
 !*.R
 !*.r
+!*.RData
