@@ -84,11 +84,11 @@ ERR_test = [] # two-step testing error
 
 
 optimal_c = np.repeat(1., 100)
-optimal_c[:10] = np.array([1, 1, 1, 1, 1.5, 1, 1, 1, 2.5, 1]) # Well tuned lambdas for first 10 datasets
-optimal_c[10:20] = np.array([0.75, 1, 1, 1.25, 1, 1, 1.25, 1, 3, 0.8])
-optimal_c[20:30] = np.array([0.75, 0.7, 1, 1.25, 1.25, 1, 1, 1, 1, 2]) 
+optimal_c[:10] = np.array([1, 1, 1, 2, 1.5, 1, 1, 1, 2.5, 1]) # Well tuned lambdas for first 10 datasets
+#optimal_c[10:20] = np.array([0.75, 1, 1, 1.25, 1, 1, 1.25, 1, 3, 0.8])
+#optimal_c[20:30] = np.array([0.75, 0.7, 1, 1.25, 1.25, 1, 1, 1, 1, 2]) 
 
-### Training Over K datasets (K is set to 10 for shorter training time)
+### Training Over K datasets (K is set to 5 for shorter training time)
 K = 5
 for k in range(K):
     #X, Y, X_test, Y_test = data_load_n(k) # data load for two-step error calculation

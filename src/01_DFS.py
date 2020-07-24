@@ -82,7 +82,7 @@ ERR_train = [] # two-step training error
 ERR_test = [] # two-step testing error
 
 ### Training Over K datasets (K is set to 10 for shorter training time)
-K = 1
+K = 10
 for k in range(K):
     #X, Y, X_test, Y_test, supp_true = data_load(k) # data load for two-step mse calculation
     res = optimal_s(k) # single datasets training
