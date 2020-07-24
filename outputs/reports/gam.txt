@@ -1,0 +1,11 @@
+Results of GAM
+The false selection rate is:
+0.502242152466368
+The negative selection rate is:
+0.075
+The average s is:
+7.43333333333333, 3.40064226523343
+The average training error is:
+0.132777777777778, 0.0282040095697577
+The average test error is:
+0.189444444444444, 0.0287822227665249

@@ -1,0 +1,20 @@
+For 3 datasets:
+  False Selection Rate: 0.0
+  Negative Selection Rate: 0.0
+  Training error: 0.0(0.0)
+  Testing error: 0.04666666666666667(0.01360827634879543)
+For datasets 0:
+    Optimal s: 4
+    Selected Variables: [0 1 2 3]
+    Training Accuracy: 1.0
+    Testing Accuray: 0.97
+For datasets 1:
+    Optimal s: 4
+    Selected Variables: [0 1 2 3]
+    Training Accuracy: 1.0
+    Testing Accuray: 0.9366666666666666
+For datasets 2:
+    Optimal s: 4
+    Selected Variables: [0 1 2 3]
+    Training Accuracy: 1.0
+    Testing Accuray: 0.9533333333333334

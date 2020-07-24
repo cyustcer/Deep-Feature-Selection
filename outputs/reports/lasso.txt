@@ -1,0 +1,11 @@
+Results of LASSO
+The false selection rate is:
+0.18356973026154
+The negative selection rate is:
+0.0042
+The average s is:
+121.97, 7.31327145632783
+The average training mse is:
+2.45544635603269, 0.570906942538645
+The average test mse is:
+4.34364121882313, 1.00648579819696

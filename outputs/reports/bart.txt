@@ -1,0 +1,11 @@
+Results of BART
+The false selection rate is:
+0.182608695652174
+The negative selection rate is:
+0.216666666666667
+The average s is:
+3.83333333333333, 1.3412123525798
+The average training error is:
+0.0496666666666667, 0.0122035733727927
+The average test error is:
+0.218333333333333, 0.0261992073817692

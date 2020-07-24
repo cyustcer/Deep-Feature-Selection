@@ -1,0 +1,11 @@
+Results of linear SCAD
+The false selection rate is:
+0.0126987301269873
+The negative selection rate is:
+0.0126
+The average s is:
+100.01, 1.34461139292355
+The average training mse is:
+0.877979987887844, 0.0892908091235181
+The average test mse is:
+1.3781297398018, 0.142297211983411

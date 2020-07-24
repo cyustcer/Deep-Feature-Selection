@@ -1,0 +1,11 @@
+Results of Nonlinear SCAD
+The false selection rate is:
+0.859259259259259
+The negative selection rate is:
+0.841666666666667
+The average s is:
+4.5, 10.9631042671505
+The average training error is:
+0.401, 0.112219509849244
+The average test error is:
+0.451555555555556, 0.0618472555094285

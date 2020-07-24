@@ -1,0 +1,11 @@
+Results of Elastic Net
+The false selection rate is:
+0.221440300258034
+The negative selection rate is:
+0.0043
+The average s is:
+127.89, 7.56506457475427
+The average training mse is:
+2.80891941588593, 0.690426424667338
+The average test mse is:
+5.14672690733267, 1.31105318666456
