@@ -16,6 +16,7 @@
 !docs/
 !docs/markdowns/
 !docs/notebooks/
+!outputs/
 !outputs/models/
 !outputs/reports/
 
