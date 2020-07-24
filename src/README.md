@@ -34,18 +34,18 @@ Here we list the packages we used for our methods and comparison methods
 
 ### Python packages for DFS
 
-* Pytorch
-* numpy
-* pandas
+* ___Pytorch___
+* ___numpy___
+* ___pandas___
 
 ### R packages
 
-* glmnet (For LASSO and Elastic Net)
-* ncvreg (For SCAD)
-* bartMachine (For Bayesian Additive Regression Tree)
-* gamsel (For Generalized Additive Models)
-* BNN (For Bayesian Neural Networks)
-* h2o (For Random Forest)
+* ___glmnet___ (For LASSO and Elastic Net)
+* ___ncvreg___ (For SCAD)
+* ___bartMachine___ (For Bayesian Additive Regression Tree)
+* ___gamsel___ (For Generalized Additive Models)
+* ___BNN___ (For Bayesian Neural Networks)
+* ___h2o___ (For Random Forest)
 
 ## Computing Environment
 We have provided the guidance of implement our methods in `../docs/notebooks/`. If you are interested in replicate our results, please make sure you are in the same environment as ours.
