@@ -100,7 +100,7 @@ BICs = np.array(BICs)
 DIR_res = "../outputs/reports/"
 
 fsr, nsr = measure(TRUEs, SUPPs)
-final_report = "For " + str(K) + " datasets, with c = " + str(c) + ":\n"
+final_report = "For " + str(K) + " datasets:\n"
 final_report += "  False Selection Rate: " + str(fsr) + "\n"
 final_report += "  Negative Selection Rate: " + str(nsr) + "\n"
 final_report += "  Training error: " + str(np.mean(ERR_train)) + "(" + str(np.std(ERR_train)) + ")\n"
