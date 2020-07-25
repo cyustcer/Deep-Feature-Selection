@@ -8,7 +8,7 @@ In the paper, we raised two simulation studies to demonstrate advantage of our m
 * Nonlinear example([notebooks](docs/notebooks/Nonlinear_example.ipynb), [pdf](docs/notebooks/Nonlinear_example.pdf), [html](docs/notebooks/Nonlinear_example.html))
 
 We also include the comparison methods using __R__ packages. Please see the following documents in `docs/markdowns` for details:
-* Linear example([Rmarkdown](docs/markdowns/linear_example.Rmd), [pdf](docs/markdowns/linear_example.Rmd), [html](docs/markdowns/linear_example.Rmd))
-* Nonlinear example([Rmarkdown](docs/markdowns/nonlinear_example.Rmd), [pdf](docs/markdowns/nonlinear_example.Rmd), [html](docs/markdowns/nonlinear_example.Rmd))
+* Linear example([Rmarkdown](docs/markdowns/linear_example.Rmd), [pdf](docs/markdowns/linear_example.pdf), [html](docs/markdowns/linear_example.html))
+* Nonlinear example([Rmarkdown](docs/markdowns/nonlinear_example.Rmd), [pdf](docs/markdowns/nonlinear_example.pdf), [html](docs/markdowns/nonlinear_example.html))
 
 The source code is also provided in `src` folder, and details about using the code, such as package information, environment is given in [`README`](src/README.md)
