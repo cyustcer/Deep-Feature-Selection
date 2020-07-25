@@ -107,6 +107,6 @@ final_report += "  Training error: " + str(np.mean(ERR_train)) + "(" + str(np.st
 final_report += "  Testing error: " + str(np.mean(ERR_test)) + "(" + str(np.std(ERR_test)) + ")\n"
 
 Report = final_report + Report
-report_file = open(DIR_res+"DFS_linear_test.txt", "a")
+report_file = open(DIR_res+"DFS_linear.txt", "a")
 report_file.write(Report)
 report_file.close()

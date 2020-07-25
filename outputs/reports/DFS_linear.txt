@@ -1,0 +1,45 @@
+For 10 datasets:
+  False Selection Rate: 0.018018018018018018
+  Negative Selection Rate: 0.019
+  Training error: 1.0600836098194122(0.24582165209683074)
+  Testing error: 5.41802978515625(7.500007806131569)
+For datasets 0:
+    Optimal s: 100
+    Training MSE: 0.9395886063575745
+    Testing MSE: 1.177188754081726
+For datasets 1:
+    Optimal s: 100
+    Training MSE: 1.0336636304855347
+    Testing MSE: 4.9730987548828125
+For datasets 2:
+    Optimal s: 99
+    Training MSE: 1.0797924995422363
+    Testing MSE: 1.393008828163147
+For datasets 3:
+    Optimal s: 100
+    Training MSE: 0.8668122887611389
+    Testing MSE: 6.774733066558838
+For datasets 4:
+    Optimal s: 101
+    Training MSE: 0.8440015912055969
+    Testing MSE: 2.066708564758301
+For datasets 5:
+    Optimal s: 98
+    Training MSE: 1.7137088775634766
+    Testing MSE: 2.895488977432251
+For datasets 6:
+    Optimal s: 101
+    Training MSE: 0.817362904548645
+    Testing MSE: 1.31207275390625
+For datasets 7:
+    Optimal s: 96
+    Training MSE: 1.1485296487808228
+    Testing MSE: 27.3547306060791
+For datasets 8:
+    Optimal s: 105
+    Training MSE: 1.0080558061599731
+    Testing MSE: 3.193763017654419
+For datasets 9:
+    Optimal s: 99
+    Training MSE: 1.1493202447891235
+    Testing MSE: 3.0395045280456543
