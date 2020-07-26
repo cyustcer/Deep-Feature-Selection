@@ -10,7 +10,6 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Yao Chen" />
 
 
 <title>Nonlinear example</title>
@@ -363,8 +362,6 @@ summary {
 
 
 <h1 class="title toc-ignore">Nonlinear example</h1>
-<h4 class="author">Yao Chen</h4>
-<h4 class="date">7/20/2020</h4>
 
 </div>
 
@@ -461,14 +458,14 @@ h2o.init() # start a h2o session</code></pre>
 <pre><code>##  Connection successful!
 ## 
 ## R is connected to the H2O cluster: 
-##     H2O cluster uptime:         1 hours 40 minutes 
+##     H2O cluster uptime:         19 minutes 17 seconds 
 ##     H2O cluster timezone:       Europe/Prague 
 ##     H2O data parsing timezone:  UTC 
 ##     H2O cluster version:        3.30.0.6 
-##     H2O cluster version age:    22 days  
-##     H2O cluster name:           H2O_started_from_R_chenya3i_xrp355 
+##     H2O cluster version age:    26 days  
+##     H2O cluster name:           H2O_started_from_R_chenya3i_qws292 
 ##     H2O cluster total nodes:    1 
-##     H2O cluster total memory:   28.95 GB 
+##     H2O cluster total memory:   28.96 GB 
 ##     H2O cluster total cores:    1 
 ##     H2O cluster allowed cores:  1 
 ##     H2O cluster healthy:        TRUE 
@@ -547,7 +544,7 @@ fit_bart = predict(bart, X_train, type=&quot;class&quot;)
 pred_bart = predict(bart, X_test, type=&quot;class&quot;)
 train_err_bart = 1 - sum(fit_bart==y_train)/300.
 test_err_bart = 1 - sum(pred_bart==y_test)/300.</code></pre>
-<p>The selected support is V1, V3, V4, the training error is 0.0433333, the test error is 0.2133333.</p>
+<p>The selected support is V1, V3, V4, the training error is 0.0533333, the test error is 0.2133333.</p>
 </div>
 <div id="bayesian-neural-networks" class="section level3">
 <h3>Bayesian Neural Networks</h3>

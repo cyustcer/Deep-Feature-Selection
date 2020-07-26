@@ -1,11 +1,9 @@
 ---
 title: "Linear example"
-author: "Yao Chen"
-date: "7/22/2020"
 output:
-  pdf_document:
-    toc: yes
   html_document:
+    toc: yes
+  pdf_document:
     toc: yes
 ---
 
